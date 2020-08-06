@@ -287,6 +287,7 @@ ui::PixelFormat SurfaceFlinger::defaultCompositionPixelFormat = ui::PixelFormat:
 Dataspace SurfaceFlinger::wideColorGamutCompositionDataspace = Dataspace::V0_SRGB;
 ui::PixelFormat SurfaceFlinger::wideColorGamutCompositionPixelFormat = ui::PixelFormat::RGBA_8888;
 LatchUnsignaledConfig SurfaceFlinger::enableLatchUnsignaledConfig;
+bool SurfaceFlinger::useHeadlessMode;
 
 std::string decodeDisplayColorSetting(DisplayColorSetting displayColorSetting) {
     switch(displayColorSetting) {
@@ -373,6 +374,9 @@ SurfaceFlinger::SurfaceFlinger(Factory& factory) : SurfaceFlinger(factory, SkipI
     useContextPriority = use_context_priority(true);
 
     mInternalDisplayPrimaries = sysprop::getDisplayNativePrimaries();
+
+    useHeadlessMode = sysprop::use_headless_mode(false);
+    ALOGI_IF(useHeadlessMode, "Initializing in Headless Mode");
 
     // debugging stuff...
     char value[PROPERTY_VALUE_MAX];
@@ -4846,6 +4850,12 @@ void SurfaceFlinger::setPowerModeInternal(const sp<DisplayDevice>& display, hal:
     }
 
     const auto displayId = display->getPhysicalId();
+    if (useHeadlessMode) {
+        ALOGD("Ignoring power mode change to %d for display %s. Running in headless mode.", mode,
+              to_string(displayId).c_str());
+        return;
+    }
+
     ALOGD("Setting power mode %d on display %s", mode, to_string(displayId).c_str());
 
     const hal::PowerMode currentMode = display->getPowerMode();

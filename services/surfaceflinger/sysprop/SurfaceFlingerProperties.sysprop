@@ -471,3 +471,12 @@ prop {
     access: Readonly
     prop_name: "ro.surface_flinger.ignore_hdr_camera_layers"
 }
+
+# If set, surface flinger will run in a headless mode.
+prop {
+    api_name: "use_headless_mode"
+    type: Boolean
+    scope: System
+    access: Readonly
+    prop_name: "ro.surface_flinger.use_headless_mode"
+}

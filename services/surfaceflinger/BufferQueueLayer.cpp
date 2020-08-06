@@ -28,6 +28,7 @@
 #include <system/window.h>
 
 #include "LayerRejecter.h"
+#include "SurfaceFlingerProperties.h"
 #include "SurfaceInterceptor.h"
 
 #include "FrameTracer/FrameTracer.h"
@@ -37,7 +38,8 @@
 namespace android {
 using PresentState = frametimeline::SurfaceFrame::PresentState;
 
-BufferQueueLayer::BufferQueueLayer(const LayerCreationArgs& args) : BufferLayer(args) {}
+BufferQueueLayer::BufferQueueLayer(const LayerCreationArgs& args)
+      : BufferLayer(args), mHeadless(sysprop::use_headless_mode(false)) {}
 
 BufferQueueLayer::~BufferQueueLayer() {
     mContentsChangedListener->abandon();
@@ -86,7 +88,7 @@ bool BufferQueueLayer::isBufferDue(nsecs_t expectedPresentTime) const {
     const int64_t addedTime = mQueueItems[0].item.mTimestamp;
 
     // Ignore timestamps more than a second in the future
-    const bool isPlausible = addedTime < (expectedPresentTime + s2ns(1));
+    const bool isPlausible = addedTime < (expectedPresentTime + s2ns(1)) || mHeadless;
     ALOGW_IF(!isPlausible,
              "[%s] Timestamp %" PRId64 " seems implausible "
              "relative to expectedPresent %" PRId64,

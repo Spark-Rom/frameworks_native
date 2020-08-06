@@ -149,6 +149,9 @@ private:
     // a buffer to correlate the buffer with the vsync id. Can only be accessed
     // with the SF state lock held.
     FrameTimelineInfo mFrameTimelineInfo;
+
+    // Surface Flinger is running in headless mode.
+    bool mHeadless;
 };
 
 } // namespace android

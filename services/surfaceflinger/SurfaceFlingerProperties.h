@@ -52,6 +52,8 @@ bool force_hwc_copy_for_virtual_displays(bool defaultValue);
 
 int64_t max_virtual_display_dimension(int64_t defaultValue);
 
+bool use_headless_mode(bool defaultValue);
+
 bool use_vr_flinger(bool defaultValue);
 
 bool start_graphics_allocator_service(bool defaultValue);

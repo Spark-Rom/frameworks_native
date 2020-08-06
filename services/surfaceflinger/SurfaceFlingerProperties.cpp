@@ -140,6 +140,14 @@ int64_t max_virtual_display_dimension(int64_t defaultValue) {
             defaultValue);
 }
 
+bool use_headless_mode(bool defaultValue) {
+    auto temp = SurfaceFlingerProperties::use_headless_mode();
+    if (temp.has_value()) {
+        return *temp;
+    }
+    return defaultValue;
+}
+
 bool use_vr_flinger(bool defaultValue) {
     auto temp = SurfaceFlingerProperties::use_vr_flinger();
     if (temp.has_value()) {

@@ -45,6 +45,7 @@
 #include "FrameTimeline.h"
 
 #include "EventThread.h"
+#include "SurfaceFlingerProperties.h"
 
 #undef LOG_TAG
 #define LOG_TAG "EventThread"
@@ -243,8 +244,8 @@ EventThread::EventThread(std::unique_ptr<VSyncSource> vsyncSource,
         mInterceptVSyncsCallback(std::move(interceptVSyncsCallback)),
         mThrottleVsyncCallback(std::move(throttleVsyncCallback)),
         mGetVsyncPeriodFunction(std::move(getVsyncPeriodFunction)),
-        mThreadName(mVSyncSource->getName()) {
-
+        mThreadName(mVSyncSource->getName()),
+        mUseHeadlessMode(sysprop::use_headless_mode(false)) {
     LOG_ALWAYS_FATAL_IF(getVsyncPeriodFunction == nullptr,
             "getVsyncPeriodFunction must not be null");
 
@@ -445,7 +446,7 @@ void EventThread::threadMain(std::unique_lock<std::mutex>& lock) {
             switch (event->header.type) {
                 case DisplayEventReceiver::DISPLAY_EVENT_HOTPLUG:
                     if (event->hotplug.connected && !mVSyncState) {
-                        mVSyncState.emplace(event->header.displayId);
+                        mVSyncState.emplace(event->header.displayId, mUseHeadlessMode);
                     } else if (!event->hotplug.connected && mVSyncState &&
                                mVSyncState->displayId == event->header.displayId) {
                         mVSyncState.reset();

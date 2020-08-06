@@ -156,6 +156,10 @@ props {
     prop_name: "ro.surface_flinger.use_context_priority"
   }
   prop {
+    api_name: "use_headless_mode"
+    prop_name: "ro.surface_flinger.use_headless_mode"
+  }
+  prop {
     api_name: "use_smart_90_for_video"
     prop_name: "ro.surface_flinger.use_smart_90_for_video"
     deprecated: true

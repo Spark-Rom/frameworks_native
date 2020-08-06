@@ -231,6 +231,7 @@ private:
     const ThrottleVsyncCallback mThrottleVsyncCallback;
     const GetVsyncPeriodFunction mGetVsyncPeriodFunction;
     const char* const mThreadName;
+    bool mUseHeadlessMode;
 
     std::thread mThread;
     mutable std::mutex mMutex;
@@ -241,15 +242,16 @@ private:
 
     // VSYNC state of connected display.
     struct VSyncState {
-        explicit VSyncState(PhysicalDisplayId displayId) : displayId(displayId) {}
+        explicit VSyncState(PhysicalDisplayId displayId, bool synthetic)
+              : displayId(displayId), synthetic(synthetic) {}
 
         const PhysicalDisplayId displayId;
 
+        // True if VSYNC should be faked, e.g. when display is off.
+        bool synthetic;
+
         // Number of VSYNC events since display was connected.
         uint32_t count = 0;
-
-        // True if VSYNC should be faked, e.g. when display is off.
-        bool synthetic = false;
     };
 
     // TODO(b/74619554): Create per-display threads waiting on respective VSYNC signals,

@@ -1318,6 +1318,9 @@ private:
 
     std::thread::id mMainThreadId = std::this_thread::get_id();
 
+    // Indicated whether SurfaceFlinger is running in headless mode.
+    static bool useHeadlessMode;
+
     DisplayColorSetting mDisplayColorSetting = DisplayColorSetting::kEnhanced;
 
     // Color mode forced by setting persist.sys.sf.color_mode, it must:
