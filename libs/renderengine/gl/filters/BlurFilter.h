@@ -41,7 +41,7 @@ public:
     static constexpr uint32_t kMaxPasses = 4;
     // To avoid downscaling artifacts, we interpolate the blurred fbo with the full composited
     // image, up to this radius.
-    static constexpr float kMaxCrossFadeRadius = 30.0f;
+    static constexpr float kMaxCrossFadeRadius = 10.0f;
 
     explicit BlurFilter(GLESRenderEngine& engine);
     virtual ~BlurFilter(){};
