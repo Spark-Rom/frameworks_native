@@ -11,6 +11,7 @@ cc_defaults {
     name: "renderengine_defaults",
     cflags: [
         "-DLOG_TAG=\"RenderEngine\"",
+        "-O3",
         "-Wall",
         "-Werror",
         "-Wthread-safety",
@@ -116,6 +117,7 @@ cc_library_static {
         "-fvisibility=hidden",
         "-Werror=format",
         "-Wno-unused-parameter",
+        "-O3",
     ],
     srcs: [
         ":librenderengine_sources",
