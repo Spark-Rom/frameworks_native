@@ -30,6 +30,7 @@ cc_defaults {
         "-Wno-missing-field-initializers",
         "-Wno-unused-variable",
         "-Wno-unused-parameter",
+        "-O3",
     ],
 
     export_include_dirs: ["include"],
@@ -70,6 +71,11 @@ cc_library {
         ":libvibrator_aidl",
         "ExternalVibration.cpp",
     ],
+    
+    lto: {
+        thin: true,
+    },
+    whole_program_vtables: true, // Requires ThinLTO
 }
 
 cc_library {
