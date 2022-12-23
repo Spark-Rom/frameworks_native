@@ -535,6 +535,7 @@ inline static const char *asString(OMX_INDEXEXTTYPE i, const char *def = "??") {
 //      case OMX_IndexConfigCommit:                     return "ConfigCommit";
         case OMX_IndexConfigAndroidVendorExtension:     return "ConfigAndroidVendorExtension";
         case OMX_IndexParamAudioAndroidAc3:             return "ParamAudioAndroidAc3";
+        case OMX_IndexParamAudioAndroidAc4Tbl:          return "ParamAudioAndroidAc4Tbl"; // DOLBY_AC4_SPLIT_SEC
         case OMX_IndexConfigAudioPresentation:          return "ConfigAudioPresentation";
         case OMX_IndexParamAudioAndroidOpus:            return "ParamAudioAndroidOpus";
         case OMX_IndexParamAudioAndroidAacPresentation: return "ParamAudioAndroidAacPresentation";
