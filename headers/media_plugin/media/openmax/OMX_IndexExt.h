@@ -66,6 +66,8 @@ typedef enum OMX_INDEXEXTTYPE {
     OMX_IndexParamAudioAndroidAacDrcPresentation,   /**< reference: OMX_AUDIO_PARAM_ANDROID_AACDRCPRESENTATIONTYPE */
     OMX_IndexParamAudioAndroidAc4,                  /**< reference: OMX_AUDIO_PARAM_ANDROID_AC4TYPE */
     OMX_IndexConfigAudioPresentation,               /**< reference: OMX_AUDIO_CONFIG_ANDROID_AUDIOPRESENTATION */
+    // MIUI ADD: DOLBY_AC4_SPLIT_SEC
+    OMX_IndexParamAudioAndroidAc4Tbl,               /**< reference: OMX_AUDIO_PARAM_ANDROID_AC4TBL*/
     OMX_IndexExtAudioEndUnused,
 
     /* Image parameters and configurations */
