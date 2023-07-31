@@ -31,17 +31,17 @@ namespace android {
 namespace renderengine {
 namespace skia {
 
+constexpr char mixString[] = R"(
+    uniform shader blurredInput;
+    uniform shader originalInput;
+    uniform float mixFactor;
+
+    half4 main(float2 xy) {
+        return half4(mix(originalInput.eval(xy), blurredInput.eval(xy), mixFactor)).rgb1;
+    }
+)";
+
 static sk_sp<SkRuntimeEffect> createMixEffect() {
-    const char* mixString = R"(
-        uniform shader blurredInput;
-        uniform shader originalInput;
-        uniform float mixFactor;
-
-        half4 main(float2 xy) {
-            return half4(mix(originalInput.eval(xy), blurredInput.eval(xy), mixFactor)).rgb1;
-        }
-    )";
-
     auto [mixEffect, mixError] = SkRuntimeEffect::MakeForShader(SkString(mixString));
     if (!mixEffect) {
         LOG_ALWAYS_FATAL("RuntimeShader error: %s", mixError.c_str());
@@ -49,16 +49,14 @@ static sk_sp<SkRuntimeEffect> createMixEffect() {
     return mixEffect;
 }
 
-static SkMatrix getShaderTransform(const SkCanvas* canvas, const SkRect& blurRect,
-                                   const float scale) {
-    SkMatrix matrix;
+static void getShaderTransform(SkMatrix& matrix, const SkCanvas* canvas, const SkRect& blurRect,
+                               const float scale) {
     matrix.setScale(scale, scale);
     matrix.postTranslate(blurRect.left(), blurRect.top());
     SkMatrix drawInverse;
     if (canvas != nullptr && canvas->getTotalMatrix().invert(&drawInverse)) {
         matrix.postConcat(drawInverse);
     }
-    return matrix;
 }
 
 BlurFilter::BlurFilter(const float maxCrossFadeRadius)
@@ -76,7 +74,8 @@ void BlurFilter::drawBlurRegion(SkCanvas* canvas, const SkRRect& effectRegion,
     SkPaint paint;
     paint.setAlphaf(blurAlpha);
 
-    const auto blurMatrix = getShaderTransform(canvas, blurRect, 1.0f / kInputScale);
+    SkMatrix blurMatrix;
+    getShaderTransform(blurMatrix, canvas, blurRect, 1.0f / kInputScale);
     SkSamplingOptions linearSampling(SkFilterMode::kLinear, SkMipmapMode::kNone);
     const auto blurShader = blurredImage->makeShader(SkTileMode::kMirror, SkTileMode::kMirror,
                                                      linearSampling, &blurMatrix);
@@ -89,9 +88,8 @@ void BlurFilter::drawBlurRegion(SkCanvas* canvas, const SkRRect& effectRegion,
 
         SkRuntimeShaderBuilder blurBuilder(mMixEffect);
         blurBuilder.child("blurredInput") = blurShader;
-        blurBuilder.child("originalInput") =
-                input->makeShader(SkTileMode::kMirror, SkTileMode::kMirror, linearSampling,
-                                  inputMatrix);
+        blurBuilder.child("originalInput") = input->makeShader(SkTileMode::kMirror, SkTileMode::kMirror, linearSampling,
+                                          inputMatrix);
         blurBuilder.uniform("mixFactor") = blurRadius / mMaxCrossFadeRadius;
 
         paint.setShader(blurBuilder.makeShader());

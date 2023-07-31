@@ -95,16 +95,8 @@ sk_sp<SkImage> KawaseBlurFilter::generate(GrRecordingContext* context, const uin
     SkPaint paint;
     paint.setBlendMode(SkBlendMode::kSrc);
 
-    sk_sp<SkImageFilter> blurFilter = SkImageFilters::Blur(
+    sk_sp<SkImageFilter> finalFilter = SkImageFilters::Blur(
         sigmaScale, sigmaScale, SkTileMode::kMirror, nullptr);
-
-    const float glassBlurScale = 0.5f;
-
-    sk_sp<SkImageFilter> glassEffect = SkImageFilters::Blur(
-        blurRadius * kInputScale * glassBlurScale, blurRadius * kInputScale * glassBlurScale,
-        SkTileMode::kMirror, nullptr);
-
-    sk_sp<SkImageFilter> finalFilter = SkImageFilters::Compose(blurFilter, glassEffect);
 
     paint.setImageFilter(finalFilter);
 
